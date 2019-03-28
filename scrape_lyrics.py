@@ -1,7 +1,12 @@
 from bs4 import BeautifulSoup
 import requests
+import spotify_token as st
+from datetime import datetime
+import time
+import json
 
-def scrape ():
+
+def scrape (song_name, song_artist):
     l = []
 
     lyricheaders = {
@@ -14,13 +19,13 @@ def scrape ():
         'Upgrade-Insecure-Requests': '1'
     }
 
-    query = "perfect one direction lyrics"
+    query = f"{song_name} {song_artist} lyrics"
 
     url = f'https://www.google.com/search?q={query}&ie=utf-8&oe=utf-8'
 
     request = requests.get(url, headers=lyricheaders)
 
-    lyrics = ""
+    lyrics = f"{song_name} {song_artist}"
 
     lyrics_paragraph = BeautifulSoup(request.text, "html.parser").find_all("div", {"jsname": "U8S5sf"})
 
@@ -33,10 +38,46 @@ def scrape ():
         for line in lyrics_line:
             lyrics = f"{lyrics}\n{line.text}"
 
-        lyrics = f"{lyrics}<br>"
+        lyrics = f"{lyrics}"
 
     return lyrics
 
+def getSong():
+
+    # if token is None or token_exp < datetime.now():
+
+    data = st.start_session(user, passw)
+    token = data[0]
+    token_exp = data[1]
+
+    spotheaders = {'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': f'Bearer {token}',
+    }
+
+    artist = ""
+    song = ""
+
+    response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=spotheaders)
+    if response.status_code != 200:
+        print(response.status_code)
+        print("Bad Response from Spotify API")
+
+    else:
+        json_data = json.loads(response.text)
+        artist = json_data["item"]["artists"][0]["name"]
+        if song != json_data["item"]["name"]:
+            song = json_data["item"]["name"]
+
+    return scrape(song, artist)
+
+user = input("Please enter spotify username: ")
+passw = input("Please enter spotify password: ")
+
 
 if __name__ == "__main__":
-    print(scrape())
+
+
+    while True:
+        print(getSong())
+        time.sleep(3)
