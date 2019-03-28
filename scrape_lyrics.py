@@ -14,22 +14,27 @@ def scrape ():
         'Upgrade-Insecure-Requests': '1'
     }
 
-    query = "Perfect One Direction lyrics"
+    query = "perfect one direction lyrics"
 
     url = f'https://www.google.com/search?q={query}&ie=utf-8&oe=utf-8'
 
     request = requests.get(url, headers=lyricheaders)
 
-    soup = BeautifulSoup(request.text, "html.parser").find_all("span", {"jsname": "YS01Ge"})
-
-    print (soup)
-
     lyrics = ""
 
-    for link in soup:
-        lyrics = f"{lyrics}\n{link.text}"
+    lyrics_paragraph = BeautifulSoup(request.text, "html.parser").find_all("div", {"jsname": "U8S5sf"})
 
-    # print (lyrics)
+    for para in lyrics_paragraph:
+        if BeautifulSoup(str(para), "html.parser").find("div", {"class": "rGtH5c"}) is not None:
+            continue
+
+        lyrics_line = BeautifulSoup(str(para), "html.parser").find_all("span", {"jsname": "YS01Ge"})
+
+        for line in lyrics_line:
+            lyrics = f"{lyrics}\n{line.text}"
+
+        lyrics = f"{lyrics}<br>"
+
     return lyrics
 
 
