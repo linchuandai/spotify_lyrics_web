@@ -36,7 +36,7 @@ def scrape (song_name, song_artist):
     lyrics_paragraph = BeautifulSoup(request.text, "html.parser").find_all("div", {"jsname": "U8S5sf"})
 
     for para in lyrics_paragraph:
-        # TO DO: find better way of removing the partially cut off paragraph
+        # TODO: find better way of removing the partially cut off paragraph
         if BeautifulSoup(str(para), "html.parser").find("div", {"class": "OULBYb"}) is not None:
             continue
 
