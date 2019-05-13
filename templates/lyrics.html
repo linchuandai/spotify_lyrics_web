@@ -1,0 +1,16 @@
+<!doctype html>
+
+<html>
+<body>
+    <div>
+        <h1>{{ lyrics[0]}}</h1>
+        {% for line in lyrics[1:] %}
+            {% if line == '' %}
+                <br>
+            {% else %}
+                <div class="lyric">{{ line }}</div>
+            {% endif %}
+        {% endfor %}
+    </div>
+</body>
+</html>
