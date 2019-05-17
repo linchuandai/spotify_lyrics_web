@@ -27,7 +27,24 @@ def lyrics():
         # redirects to home so user can log in
         return redirect(url_for('home'))
 
-    return render_template('lyrics.html', lyrics=getSong(session['token']))
+    song_response = getSong(session['token'])
+    return redirect(url_for('search_lyrics'))
+
+    # handle response errors
+    if song_response == 204:
+        return redirect(url_for('search_lyrics'))
+
+    return render_template('lyrics.html', lyrics=song_response)
+
+@app.route('/search_lyrics', methods=["GET", "POST"])
+def search_lyrics():
+    if request.method == 'POST':
+        song_name =  request.form['song_name']
+        song_artist = request.form['song_artist']
+        song_response = scrape(song_name, song_artist)
+        return render_template('lyrics.html', lyrics=song_response)
+
+    return render_template('search_lyric.html')
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

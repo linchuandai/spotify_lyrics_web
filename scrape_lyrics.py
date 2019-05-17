@@ -32,6 +32,8 @@ def scrape (song_name, song_artist):
 
     if remote_song_info:
         song_url = remote_song_info['result']['url']
+    else: 
+        return ['Song not found']
 
     page = requests.get(song_url)
     html = BeautifulSoup(page.text, 'html.parser')
@@ -53,8 +55,7 @@ def getSong(token):
 
     response = requests.get('https://api.spotify.com/v1/me/player/currently-playing', headers=spotheaders)
     if response.status_code != 200:
-        print(response.status_code)
-        print("Bad Response from Spotify API")
+        return response.status_code
 
     else:
         json_data = json.loads(response.text)
